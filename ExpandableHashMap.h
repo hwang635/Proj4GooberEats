@@ -65,14 +65,14 @@ void ExpandableHashMap<KeyType, ValueType>::printHashMap() const {
 		typename std::list<BucketNode>::iterator itr = m_hashArray[i].begin();
 		int count = 0;
 		while (itr != m_hashArray[i].end()) {
-			std::cerr << "BucketNode" << count << " key=" << itr->b_key << " value=" << itr->b_value << " ";
+			std::cerr << "BucketNode" << count << " key=" << itr->b_key.latitudeText << "value=" << itr->b_value << " ";
 			count++;
 			itr++;
 		}
 		std::cerr << std::endl;
 	}
 
-	std::cerr << "Num of assoc = " << m_numAssoc << std::endl;
+	std::cerr << "Num of assoc = " << this->size() << std::endl;
 }
 
 //------Private fx implementations
@@ -107,7 +107,7 @@ void ExpandableHashMap<KeyType, ValueType>::cleanUp() {
 		typename std::list<BucketNode>::iterator itr = m_hashArray[i].begin();
 		while (itr != m_hashArray[i].end()) {
 			//Erase each linkedlist node from list
-			std::cerr << "deleted " << itr->b_key << " from list " << std::endl;
+			//std::cerr << "deleted " << itr->b_key << " from list " << std::endl;
 			itr = m_hashArray[i].erase(itr);
 		}
 	}
@@ -195,7 +195,7 @@ void ExpandableHashMap<KeyType, ValueType>::associate(const KeyType& key, const 
 		std::cerr << "calcloadfactor, returns " << calcLoadFactor(m_numAssoc + 1.0) << std::endl;
 		if (calcLoadFactor(m_numAssoc + 1.0) > m_maxLoadFactor) {
 			rehash();
-			std::cerr << "rehash when add " << key << std::endl;
+			//std::cerr << "rehash when add " << key << std::endl;
 		}
 		//Add new item
 		insertItem(key, value);
