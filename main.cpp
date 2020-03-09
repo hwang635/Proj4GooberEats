@@ -6,12 +6,15 @@
 #include <vector>
 using namespace std;
 
+#include "ExpandableHashMap.h" //COMMENT OUT LATER
+void testExpandableHashMap(); //COMMENT OUT LATER
+
 bool loadDeliveryRequests(string deliveriesFile, GeoCoord& depot, vector<DeliveryRequest>& v);
 bool parseDelivery(string line, string& lat, string& lon, string& item);
 
 int main(int argc, char *argv[])
 {
-    if (argc != 3)
+    /*if (argc != 3)
     {
         cout << "Usage: " << argv[0] << " mapdata.txt deliveries.txt" << endl;
         return 1;
@@ -55,7 +58,48 @@ int main(int argc, char *argv[])
     cout << "You are back at the depot and your deliveries are done!\n";
     cout.setf(ios::fixed);
     cout.precision(2);
-    cout << totalMiles << " miles travelled for all deliveries." << endl;
+    cout << totalMiles << " miles travelled for all deliveries." << endl; */
+
+    ExpandableHashMap<string, int>* hashmap = new ExpandableHashMap<string, int>;
+    delete hashmap;
+
+    testExpandableHashMap();
+}
+
+void testExpandableHashMap() { //COMMENT OUT LATER!
+    //Define hashmap that maps strings ==> doubles, max load factor of 0.3, init has 8 empty buckets
+    ExpandableHashMap<string, double> nameToGPA(0.3);
+
+    //Add new items to hashmap
+    //Insert 3rd item should cause hashmap to ++ # of buckets, rehash items
+    nameToGPA.associate("Carey", 3.5); // Carey has a 3.5 GPA
+    nameToGPA.associate("David", 3.99); // David has a 3.99 GPA
+    nameToGPA.associate("Abe", 3.2); // Abe has a 3.2 GPA
+    nameToGPA.associate("Carey", 1.05); //Carey now has a 1.0 GPA
+    nameToGPA.associate("Bob", 2.222); //Bob has 2.222 GPA
+    nameToGPA.associate("verygood", 5.0);
+    nameToGPA.associate("verygood", 5.5); //verygood now = 5.5 GPA
+    nameToGPA.associate("Cat", 1.5);
+    nameToGPA.associate("Dog", 1.5);
+    nameToGPA.associate("cat", -2.5);
+    nameToGPA.associate("rabbit", -0.1);
+    nameToGPA.associate("bird", 3.9);
+
+    nameToGPA.printHashMap();
+
+    double* davidsGPA = nameToGPA.find("David");
+    if (davidsGPA != nullptr)
+        *davidsGPA = 1.5; //David sb 1.5
+    nameToGPA.associate("Carey", 4.0); // Carey deserves a 4.0
+    double* lindasGPA = nameToGPA.find("Linda");
+    if (lindasGPA == nullptr)
+        cout << "Linda is not in the roster!" << endl;
+    else
+        cout << "Linda’s GPA is: " << *lindasGPA << endl;
+    if (*(nameToGPA.find("Cat")) == 1.5 && *(nameToGPA.find("rabbit")) == -0.1)
+        cout << "Cat has 1.5 GPA, rabbit has -0.1" << endl;
+
+    nameToGPA.printHashMap();
 }
 
 bool loadDeliveryRequests(string deliveriesFile, GeoCoord& depot, vector<DeliveryRequest>& v)

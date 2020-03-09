@@ -9,6 +9,10 @@ unsigned int hasher(const GeoCoord& g)
     return std::hash<string>()(g.latitudeText + g.longitudeText);
 }
 
+unsigned int hasher(const string& s) {
+    return std::hash<string>()(s); //calls std hash function to hash str s
+}
+
 class StreetMapImpl
 {
 public:
