@@ -60,8 +60,8 @@ int main(int argc, char *argv[])
     cout.precision(2);
     cout << totalMiles << " miles travelled for all deliveries." << endl; */
 
-    ExpandableHashMap<string, int>* hashmap = new ExpandableHashMap<string, int>;
-    delete hashmap;
+    //ExpandableHashMap<string, int>* hashmap = new ExpandableHashMap<string, int>;
+    //delete hashmap;
 
     testExpandableHashMap();
 }
@@ -74,6 +74,9 @@ void testExpandableHashMap() { //COMMENT OUT LATER!
     //Insert 3rd item should cause hashmap to ++ # of buckets, rehash items
     nameToGPA.associate("Carey", 3.5); // Carey has a 3.5 GPA
     nameToGPA.associate("David", 3.99); // David has a 3.99 GPA
+
+    nameToGPA.printHashMap();
+
     nameToGPA.associate("Abe", 3.2); // Abe has a 3.2 GPA
     nameToGPA.associate("Carey", 1.05); //Carey now has a 1.0 GPA
     nameToGPA.associate("Bob", 2.222); //Bob has 2.222 GPA
@@ -85,7 +88,7 @@ void testExpandableHashMap() { //COMMENT OUT LATER!
     nameToGPA.associate("rabbit", -0.1);
     nameToGPA.associate("bird", 3.9);
 
-    nameToGPA.printHashMap();
+    nameToGPA.printHashMap(); //should be rehashed
 
     double* davidsGPA = nameToGPA.find("David");
     if (davidsGPA != nullptr)
@@ -96,10 +99,10 @@ void testExpandableHashMap() { //COMMENT OUT LATER!
         cout << "Linda is not in the roster!" << endl;
     else
         cout << "Linda’s GPA is: " << *lindasGPA << endl;
-    if (*(nameToGPA.find("Cat")) == 1.5 && *(nameToGPA.find("rabbit")) == -0.1)
-        cout << "Cat has 1.5 GPA, rabbit has -0.1" << endl;
+  //  if (*(nameToGPA.find("Cat")) == 1.5 && *(nameToGPA.find("rabbit")) == -0.1)
+    //    cout << "Cat has 1.5 GPA, rabbit has -0.1" << endl;
 
-    nameToGPA.printHashMap();
+   // nameToGPA.printHashMap();
 }
 
 bool loadDeliveryRequests(string deliveriesFile, GeoCoord& depot, vector<DeliveryRequest>& v)
