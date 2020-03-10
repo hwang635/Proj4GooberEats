@@ -1,5 +1,7 @@
 #include "provided.h"
+#include "ExpandableHashMap.h"
 #include <list>
+#include <queue>
 using namespace std;
 
 class PointToPointRouterImpl
@@ -12,22 +14,37 @@ public:
         const GeoCoord& end,
         list<StreetSegment>& route,
         double& totalDistanceTravelled) const;
+private:
+    const StreetMap* m_streetmap;
+
+    //Maps current loc to prev loc connecting/leading to it
+    ExpandableHashMap<StreetSegment, StreetSegment> m_currentToPrevious;
+    //Maps StreetSegment loc to bool whether it has been already been visited or not
+    ExpandableHashMap<StreetSegment, bool> m_segmentVisited;
 };
 
-PointToPointRouterImpl::PointToPointRouterImpl(const StreetMap* sm)
-{
+//Constructor, set m_streetmap
+PointToPointRouterImpl::PointToPointRouterImpl(const StreetMap* sm) {
+    m_streetmap = sm;
 }
 
-PointToPointRouterImpl::~PointToPointRouterImpl()
-{
+//Destructor, if needed to dealloc memory
+PointToPointRouterImpl::~PointToPointRouterImpl() {
 }
 
-DeliveryResult PointToPointRouterImpl::generatePointToPointRoute(
-        const GeoCoord& start,
-        const GeoCoord& end,
-        list<StreetSegment>& route,
-        double& totalDistanceTravelled) const
-{
+DeliveryResult PointToPointRouterImpl::generatePointToPointRoute(const GeoCoord& start, const GeoCoord& end,
+        list<StreetSegment>& route, double& totalDistanceTravelled) const {
+    //If start + end are the same, clear route + totalDistTravelled = 0
+    if (start.latitude == end.latitude && start.longitude == end.longitude) {
+        route.clear();
+        totalDistanceTravelled = 0;
+        return DELIVERY_SUCCESS;
+    }
+
+    queue<GeoCoord> coords;
+    coords.push(start);
+
+
     return NO_ROUTE;  // Delete this line and implement this function correctly
 }
 
