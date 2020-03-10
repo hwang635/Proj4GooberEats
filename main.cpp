@@ -8,6 +8,7 @@ using namespace std;
 
 #include "ExpandableHashMap.h" //COMMENT OUT LATER
 void testExpandableHashMap(); //COMMENT OUT LATER
+void testStreetMap(); //COMMENT OUT LATER
 
 bool loadDeliveryRequests(string deliveriesFile, GeoCoord& depot, vector<DeliveryRequest>& v);
 bool parseDelivery(string line, string& lat, string& lon, string& item);
@@ -60,15 +61,38 @@ int main(int argc, char *argv[])
     cout.precision(2);
     cout << totalMiles << " miles travelled for all deliveries." << endl; */
 
-    //ExpandableHashMap<string, int>* hashmap = new ExpandableHashMap<string, int>;
-    //delete hashmap;
+    //testExpandableHashMap();
+    testStreetMap();
+}
 
-    testExpandableHashMap();
+void testStreetMap() {
+    StreetMap streetmap;
+
+    streetmap.load("minimapdata.txt");
 }
 
 void testExpandableHashMap() { //COMMENT OUT LATER!
+    ExpandableHashMap<GeoCoord, string> geo(0.3);
+
+    GeoCoord g1("100", "200");
+    GeoCoord g2("-1231", "300");
+    GeoCoord g3("0.33", "33.3");
+    geo.associate(g1, "num1");
+    geo.associate(g2, "num2");
+    geo.associate(g3, "num3!!");
+
+    geo.printHashMap();
+    geo.reset();
+    cerr << "reset hashmap, sb 8 empty buckets" << endl;
+    geo.printHashMap();
+
+     //ExpandableHashMap<string, int>* hashmap = new ExpandableHashMap<string, int>;
+    //delete hashmap;
+
     //Define hashmap that maps strings ==> doubles, max load factor of 0.3, init has 8 empty buckets
-    ExpandableHashMap<string, double> nameToGPA(0.3);
+    /*ExpandableHashMap<string, double> nameToGPA(0.3);
+    nameToGPA.printHashMap(); //sb empty, 8 buckets
+    cerr << "size = " << nameToGPA.size() << endl; //sb 8
 
     //Add new items to hashmap
     //Insert 3rd item should cause hashmap to ++ # of buckets, rehash items
@@ -99,10 +123,12 @@ void testExpandableHashMap() { //COMMENT OUT LATER!
         cout << "Linda is not in the roster!" << endl;
     else
         cout << "Linda’s GPA is: " << *lindasGPA << endl;
-  //  if (*(nameToGPA.find("Cat")) == 1.5 && *(nameToGPA.find("rabbit")) == -0.1)
-    //    cout << "Cat has 1.5 GPA, rabbit has -0.1" << endl;
+    if (*(nameToGPA.find("Cat")) == 1.5 && *(nameToGPA.find("rabbit")) == -0.1)
+        cout << "Cat has 1.5 GPA, rabbit has -0.1" << endl;
 
-   // nameToGPA.printHashMap();
+    nameToGPA.reset(); //sb 8 empty buckets
+    cerr << "reset map, sb 8 empty buckets" << endl;
+    nameToGPA.printHashMap(); */
 }
 
 bool loadDeliveryRequests(string deliveriesFile, GeoCoord& depot, vector<DeliveryRequest>& v)

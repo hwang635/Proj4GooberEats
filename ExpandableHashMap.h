@@ -65,7 +65,9 @@ void ExpandableHashMap<KeyType, ValueType>::printHashMap() const {
 		typename std::list<BucketNode>::iterator itr = m_hashArray[i].begin();
 		int count = 0;
 		while (itr != m_hashArray[i].end()) {
-			std::cerr << "BucketNode" << count << " key=" << itr->b_key.latitudeText << "value=" << itr->b_value << " ";
+			std::cerr << "BucketNode" << count 
+				<< " key=(" << itr->b_key.latitudeText  << ", " << itr->b_key.longitudeText
+				<< "), value=" << itr->b_value << " ";
 			count++;
 			itr++;
 		}
