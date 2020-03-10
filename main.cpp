@@ -62,6 +62,9 @@ int main(int argc, char *argv[])
     cout << totalMiles << " miles travelled for all deliveries." << endl; */
 
     //testExpandableHashMap();
+    cerr.setf(ios::fixed);
+    cerr.precision(7);
+
     testStreetMap();
 }
 
@@ -69,6 +72,41 @@ void testStreetMap() {
     StreetMap streetmap;
 
     streetmap.load("minimapdata.txt");
+
+    vector<StreetSegment> segs;
+    GeoCoord g("34.0732851", "-118.4931016");
+    streetmap.getSegmentsThatStartWith(g, segs);
+    for (int i = 0; i < segs.size(); i++) {
+        cerr << "(" << segs[i].start.latitude << ", " << segs[i].start.longitude << "), "
+            << "(" << segs[i].end.latitude << ", " << segs[i].end.longitude << "), "
+            << segs[i].name << endl;
+    }
+    GeoCoord g1("34.0724746", "-118.4923463");
+    cerr << endl;
+    streetmap.getSegmentsThatStartWith(g1, segs);
+    for (int i = 0; i < segs.size(); i++) {
+        cerr << "(" << segs[i].start.latitude << ", " << segs[i].start.longitude << "), "
+            << "(" << segs[i].end.latitude << ", " << segs[i].end.longitude << "), "
+            << segs[i].name << endl;
+    }
+    GeoCoord g2("123", "-118.4923463");
+    GeoCoord g3("34.0724746", "118.4923463");
+    streetmap.getSegmentsThatStartWith(g2, segs);
+    cerr << "same thing should follow this line 2x" << endl;
+    for (int i = 0; i < segs.size(); i++) {
+        cerr << "(" << segs[i].start.latitude << ", " << segs[i].start.longitude << "), "
+            << "(" << segs[i].end.latitude << ", " << segs[i].end.longitude << "), "
+            << segs[i].name << endl;
+    }
+    vector<StreetSegment> empty;
+    streetmap.getSegmentsThatStartWith(g3, segs);
+    streetmap.getSegmentsThatStartWith(g, empty);
+    for (int i = 0; i < segs.size(); i++) {
+        cerr << "(" << segs[i].start.latitude << ", " << segs[i].start.longitude << "), "
+            << "(" << segs[i].end.latitude << ", " << segs[i].end.longitude << "), "
+            << segs[i].name << endl;
+    }
+
 }
 
 void testExpandableHashMap() { //COMMENT OUT LATER!

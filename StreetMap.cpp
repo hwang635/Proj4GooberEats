@@ -112,12 +112,34 @@ bool StreetMapImpl::load(string mapFile) {
     } //end of while getline
 
     printAll(); //print contents of vector + maps, COMMENT OUT LATER
-
     return true;
 }
 
+//Gets all StreetSegments + reversed StreetSegments w/ start GeoCoord matching gc ==> O(1)
+//If found, segs should only contain found StreetSegments + return true
+//Otherwise if no StreetSegments starting w/ gc, leave segs unchanged + return false
 bool StreetMapImpl::getSegmentsThatStartWith(const GeoCoord& gc, vector<StreetSegment>& segs) const {
-    return false;  // Delete this line and implement this function correctly
+    bool foundSegment = false;
+    vector<StreetSegment> matchingSegments;
+    
+    const int* startSlot = m_startToSegment.find(gc);
+    const int* endSlot = m_endToSegment.find(gc);
+
+    //If find returned value that isn't nullptr, it found a slot containing a matching StreetSeg
+    if (!(startSlot == nullptr)) {
+        foundSegment = true;
+        matchingSegments.push_back(m_segments[*startSlot]); //Add StreetSegment @ that slot in vector
+    }
+    if (!(endSlot == nullptr)) {
+        foundSegment = true;
+        matchingSegments.push_back(m_segments[*endSlot]);
+    }
+
+    //If found a matching StreetSegment, set segs = only the StreetSegments found
+    if (foundSegment)
+        segs = matchingSegments;
+    
+    return foundSegment;
 }
 
 //******************** StreetMap functions ************************************
