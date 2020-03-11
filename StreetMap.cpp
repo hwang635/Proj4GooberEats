@@ -27,8 +27,9 @@ public:
     bool getSegmentsThatStartWith(const GeoCoord& gc, vector<StreetSegment>& segs) const;
 private:
     vector<StreetSegment> m_segments; //Stores all StreetSegments
-    ExpandableHashMap<GeoCoord, int> m_startToSegment; //Maps GeoCoord to ector index of seg that starts w/ it
-    ExpandableHashMap<GeoCoord, int> m_endToSegment; //Maps GeoCoord to vector index of reverse of seg that ends w/ it
+
+    //Maps GeoCoord to vector of indexes of segs/reversed segs that start w/ it
+   ExpandableHashMap<GeoCoord, vector<int>> m_coordToSlot;
 
     void addStreetSegment(StreetSegment& seg);
     StreetSegment reverseStreetSegment(StreetSegment& origSegment);
@@ -44,10 +45,9 @@ void StreetMapImpl::printAll() const {
             << "), end(" << m_segments[i].end.latitude << ", " << m_segments[i].end.longitude
             << "), " << m_segments[i].name << endl;
     }
-    cerr << "Print contents of m_startToSlot, startGeoCoord to vector slot" << endl;
-    m_startToSegment.printHashMap();
-    cerr << "Print contents of m_endToSlot, endGeoCoord to vector slot" << endl;
-    m_endToSegment.printHashMap();
+
+    cerr << "Print contents of m_coordToSlot, startGeoCoord to vector slot of seg/reversed" << endl;
+    m_coordToSlot.printHashMap();
 }
 
 StreetMapImpl::StreetMapImpl() {
@@ -56,15 +56,37 @@ StreetMapImpl::StreetMapImpl() {
 StreetMapImpl::~StreetMapImpl() {
 }
 
-//Adds StreetSegment seg to vector holding all StreetSegments, maps start + end to slot in vector
+//Adds StreetSegment seg to vector holding all StreetSegments, maps start + end to slot in vector ==> O(1)
 void StreetMapImpl::addStreetSegment(StreetSegment& seg) {
-    //Add StreetSegment + map start GeoCoord to slot in vector
+    //Add StreetSegment + map start Segment to slot in vector
     m_segments.push_back(seg);
-    m_startToSegment.associate(seg.start, m_segments.size() - 1);
+    //If GeoCoord already stored, already found segment that starts w/ it so push new segment index to vector
+    if (m_coordToSlot.find(seg.start) != nullptr) {
+        vector<int>* slots = m_coordToSlot.find(seg.start);
+        slots->push_back(m_segments.size() - 1);
+    }
+    else { //Otherwise, first segment that starts w/ it so push new vector w/ 1 index
+        vector<int>* slots = new vector<int>;
+        slots->push_back(m_segments.size() - 1);
+        m_coordToSlot.associate(seg.start, *slots);
+        delete slots;
+    }
 
-    //Add reversed StreetSegment + map endGeoCoord to slot in vector
-    m_segments.push_back(reverseStreetSegment(seg));
-    m_endToSegment.associate(seg.end, m_segments.size() - 1);
+    //Add reversed StreetSegment + map reversed Segment to slot in vector
+    StreetSegment reversed = reverseStreetSegment(seg);
+    m_segments.push_back(reversed);
+
+    //If GeoCoord already stored, already found segment that starts w/ it so push new segment index to vector
+    if (m_coordToSlot.find(reversed.start) != nullptr) {
+        vector<int>* slots = m_coordToSlot.find(reversed.start);
+        slots->push_back(m_segments.size() - 1);
+    }
+    else { //Otherwise, first segment that starts w/ it so push new vector w/ 1 index
+        vector<int>* slots = new vector<int>;
+        slots->push_back(m_segments.size() - 1);
+        m_coordToSlot.associate(reversed.start, *slots);
+        delete slots;
+    }
 }
 
 //Returns StreetSegment w/ start, end coordinates reversed from origSegment
@@ -111,7 +133,7 @@ bool StreetMapImpl::load(string mapFile) {
         }
     } //end of while getline
 
-    printAll(); //print contents of vector + maps, COMMENT OUT LATER
+    //printAll(); //print contents of vector + maps, COMMENT OUT LATER
     return true;
 }
 
@@ -119,27 +141,26 @@ bool StreetMapImpl::load(string mapFile) {
 //If found, segs should only contain found StreetSegments + return true
 //Otherwise if no StreetSegments starting w/ gc, leave segs unchanged + return false
 bool StreetMapImpl::getSegmentsThatStartWith(const GeoCoord& gc, vector<StreetSegment>& segs) const {
-    bool foundSegment = false;
     vector<StreetSegment> matchingSegments;
-    
-    const int* startSlot = m_startToSegment.find(gc);
-    const int* endSlot = m_endToSegment.find(gc);
 
-    //If find returned value that isn't nullptr, it found a slot containing a matching StreetSeg
-    if (!(startSlot == nullptr)) {
-        foundSegment = true;
-        matchingSegments.push_back(m_segments[*startSlot]); //Add StreetSegment @ that slot in vector
-    }
-    if (!(endSlot == nullptr)) {
-        foundSegment = true;
-        matchingSegments.push_back(m_segments[*endSlot]);
-    }
+    //Look for slots of Segments that start w/ gc, if found:
+    if (!(m_coordToSlot.find(gc) == nullptr)) {
+        //Get vector that contain indexes of all Segment slots
+        const vector<int> slots = *m_coordToSlot.find(gc);
 
-    //If found a matching StreetSegment, set segs = only the StreetSegments found
-    if (foundSegment)
-        segs = matchingSegments;
+        //Clear segs param, so it will only contain found StreetSegments
+        segs.clear();
+        //For each index in slots, get the StreetSegment @ that location + push it into segs param
+        for (int i = 0; i < slots.size(); i++) {
+            int s = slots[i];
+            segs.push_back(m_segments[s]);
+        }
+
+        return true;
+    }
     
-    return foundSegment;
+    //Didn't find Segment starting w/ gc, so don't change segs + return false
+    return false;
 }
 
 //******************** StreetMap functions ************************************

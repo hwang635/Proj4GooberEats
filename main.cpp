@@ -73,7 +73,7 @@ void testStreetMap() {
 
     streetmap.load("minimapdata.txt");
 
-    vector<StreetSegment> segs;
+    /*vector<StreetSegment> segs;
     GeoCoord g("34.0732851", "-118.4931016");
     streetmap.getSegmentsThatStartWith(g, segs);
     for (int i = 0; i < segs.size(); i++) {
@@ -105,8 +105,7 @@ void testStreetMap() {
         cerr << "(" << segs[i].start.latitude << ", " << segs[i].start.longitude << "), "
             << "(" << segs[i].end.latitude << ", " << segs[i].end.longitude << "), "
             << segs[i].name << endl;
-    }
-
+    } */
 }
 
 void testExpandableHashMap() { //COMMENT OUT LATER!
