@@ -60,6 +60,12 @@ struct StreetSegment
     StreetSegment()
     {}
 
+    //COMMENT OUT LATER
+    void printSegment() {
+        std::cerr << "StreetSegment: start=(" << start.latitude << ", " << start.longitudeText <<
+            ") end=(" << end.latitudeText << ", " << end.longitude << "), name=" << name << std::endl;
+    }
+
     GeoCoord start;
     GeoCoord end;
     std::string name;

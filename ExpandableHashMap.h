@@ -65,9 +65,13 @@ void ExpandableHashMap<KeyType, ValueType>::printHashMap() const {
 		typename std::list<BucketNode>::iterator itr = m_hashArray[i].begin();
 		int count = 0;
 		while (itr != m_hashArray[i].end()) {
-			std::cerr << "BucketNode" << count 
-				<< " key=(" << itr->b_key.latitudeText  << ", " << itr->b_key.longitudeText
-				<< "), value=" << itr->b_value << " ";
+			std::cerr << "BucketNode" << count
+				<< " key=(" << itr->b_key.latitudeText << ", " << itr->b_key.longitudeText
+				<< "), value= (";
+			for (int i = 0; i < itr->b_value.size(); i++) {
+				std::cerr << itr->b_value[i] << "  ";
+			}
+			std::cerr << ")";
 			count++;
 			itr++;
 		}
@@ -194,7 +198,7 @@ void ExpandableHashMap<KeyType, ValueType>::associate(const KeyType& key, const 
 	//If returned nullptr, didn't find existing key assoc, so insert new key+value pair
 	if (v == nullptr) {
 		//If adding new item would go over max load factor, call rehash to rehash new 2x bucket table
-		std::cerr << "calcloadfactor, returns " << calcLoadFactor(m_numAssoc + 1.0) << std::endl;
+		//std::cerr << "calcloadfactor, returns " << calcLoadFactor(m_numAssoc + 1.0) << std::endl;
 		if (calcLoadFactor(m_numAssoc + 1.0) > m_maxLoadFactor) {
 			rehash();
 			//std::cerr << "rehash when add " << key << std::endl;

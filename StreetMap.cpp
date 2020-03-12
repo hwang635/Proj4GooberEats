@@ -38,7 +38,7 @@ private:
 
 //Print all 3 data structures
 void StreetMapImpl::printAll() const {
-    cerr << "Print contents of m_segments vector" << endl;
+    cerr << "Print contents of m_segments vector ==> streetmap" << endl;
     for (int i = 0; i < m_segments.size(); i++) {
         cerr << "Slot#" << i << " Segment: start("
             << m_segments[i].start.latitude << ", " << m_segments[i].start.longitude
@@ -99,8 +99,10 @@ StreetSegment StreetMapImpl::reverseStreetSegment(StreetSegment& origSeg) {
 bool StreetMapImpl::load(string mapFile) {
     ifstream infile(mapFile);
 
-    if (!infile) //Failure to open file
+    if (!infile) { //Failure to open file
+        cerr << "failure to open file" << endl; //COMMENT OUT LATER
         return false;
+    }
 
     string line;
     string streetName;

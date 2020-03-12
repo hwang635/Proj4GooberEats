@@ -9,6 +9,7 @@ using namespace std;
 #include "ExpandableHashMap.h" //COMMENT OUT LATER
 void testExpandableHashMap(); //COMMENT OUT LATER
 void testStreetMap(); //COMMENT OUT LATER
+void testPointToPointRouter(); //COMMENT OUT LATER
 
 bool loadDeliveryRequests(string deliveriesFile, GeoCoord& depot, vector<DeliveryRequest>& v);
 bool parseDelivery(string line, string& lat, string& lon, string& item);
@@ -65,7 +66,78 @@ int main(int argc, char *argv[])
     cerr.setf(ios::fixed);
     cerr.precision(7);
 
-    testStreetMap();
+    //testStreetMap();
+    testPointToPointRouter();
+}
+
+void testPointToPointRouter() {
+    StreetMap sm;
+    sm.load("mapdata.txt");
+    PointToPointRouter prouter(&sm);
+
+    GeoCoord start("34.0625329", "-118.4470263");
+    GeoCoord end("34.0712323", "-118.4505969");
+    list<StreetSegment> route;
+    double dist = 0;
+    DeliveryResult dr = prouter.generatePointToPointRoute(start, end, route, dist);
+    if (dr == BAD_COORD)
+        cerr << "BAD coord" << endl;
+    else if (dr == NO_ROUTE)
+        cerr << "NO route!" << endl;
+    else
+        cerr << "found route" << endl;
+    list<StreetSegment>::iterator itr = route.begin();
+    int count = 0;
+    cerr << "route from start: (" << start.latitude << ", " << start.longitude << ") to "
+        << "end: (" << end.latitude << ", " << end.longitude << ")" << endl;
+    while (itr != route.end()) {
+        itr->printSegment();
+        count++;
+        itr++;
+    }
+    cerr << "route finished printing, # of segments = " << route.size()
+        << ", totalDistTravelled = " << dist << endl;
+
+    start = GeoCoord("34.0712323", "-118.4505969");
+    DeliveryResult dr2 = prouter.generatePointToPointRoute(start, end, route, dist);
+    if (dr2 == BAD_COORD)
+        cerr << "BAD coord" << endl;
+    else if (dr2 == NO_ROUTE)
+        cerr << "NO route!" << endl;
+    else
+        cerr << "found route" << endl;
+    itr = route.begin();
+    count = 0;
+    cerr << "route from start: (" << start.latitude << ", " << start.longitude << ") to "
+        << "end: (" << end.latitude << ", " << end.longitude << ")" << endl;
+    while (itr != route.end()) {
+        itr->printSegment();
+        count++;
+        itr++;
+    }
+    cerr << "route finished printing, # of segments sb 0 = " << route.size()
+        << ", totalDistTravelled sb 0 = " << dist << endl;
+
+    start = GeoCoord("34.0666168", "-118.4395786");
+    end = GeoCoord("34.0683189", "-118.4536522");
+    DeliveryResult dr3 = prouter.generatePointToPointRoute(start, end, route, dist);
+    if (dr3 == BAD_COORD)
+        cerr << "BAD coord" << endl;
+    else if (dr3 == NO_ROUTE)
+        cerr << "NO route!" << endl;
+    else
+        cerr << "found route" << endl;
+    itr = route.begin();
+    count = 0;
+    cerr << "route from start: (" << start.latitude << ", " << start.longitude << ") to "
+        << "end: (" << end.latitude << ", " << end.longitude << ")" << endl;
+    while (itr != route.end()) {
+        itr->printSegment();
+        count++;
+        itr++;
+    }
+    cerr << "route finished printing, # of segments = " << route.size()
+        << ", totalDistTravelled = " << dist << endl;
 }
 
 void testStreetMap() {
