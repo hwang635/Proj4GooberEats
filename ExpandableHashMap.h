@@ -16,7 +16,7 @@ public:
 
 	//Associates item key w/ item value ==> no duplicate keys in map
 	//If no assoc currently exists w/ key, inserts key+value assoc pair into hashmap
-	//If assoc already exists, key is re-assoc w/ new value
+	//If assoc already exists, key is re-assoc w/ new valuenew
 	void associate(const KeyType& key, const ValueType& value);
 
 	// for a map that can't be modified, return a pointer to const ValueType

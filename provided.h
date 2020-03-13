@@ -146,6 +146,28 @@ public:
     DeliveryCommand()
      : m_type(INVALID)
     {}
+    
+    //COMMENT OUT LATER
+    void printDeliveryCommand() const {
+        if (m_type == PROCEED) {
+            std::cerr << "PROCEED";
+            std::cerr << " DeliveryCommand streetName= " << m_streetName
+                << " direction= " << m_direction << " dist= " << m_distance << std::endl;
+        }
+        else if (m_type == TURN) {
+            std::cerr << "TURN";
+            std::cerr << " DeliveryCommand streetName= " << m_streetName
+                << " direction= " << m_direction << std::endl;
+        }
+        else if (m_type == DELIVER) {
+            std::cerr << "DELIVER";
+            std::cerr << " DeliveryCommand" << m_streetName
+                << " item= " << m_item << std::endl;
+        }
+        else
+            std::cerr << "INVALID";
+       
+    }
 
       // make this DeliveryCommand a Proceed command
     void initAsProceedCommand(std::string dir, std::string streetName, double dist)

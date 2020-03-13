@@ -11,6 +11,7 @@ void testExpandableHashMap(); //COMMENT OUT LATER
 void testStreetMap(); //COMMENT OUT LATER
 void testPointToPointRouter(); //COMMENT OUT LATER
 void testDeliveryOptimizer(); //COMMENT OUT LATER
+void testDeliveryPlanner(); //COMMENT OUT LATER
 
 bool loadDeliveryRequests(string deliveriesFile, GeoCoord& depot, vector<DeliveryRequest>& v);
 bool parseDelivery(string line, string& lat, string& lon, string& item);
@@ -70,7 +71,43 @@ int main(int argc, char *argv[])
     //testStreetMap();
     //testPointToPointRouter();
 
-    testDeliveryOptimizer();
+    //testDeliveryOptimizer();
+    testDeliveryPlanner();
+}
+
+void testDeliveryPlanner() {
+    StreetMap sm;
+    sm.load("mapdata.txt");
+
+    GeoCoord depot("34.0625329", "-118.4470263");
+    GeoCoord chicken("34.0712323", "-118.4505969");
+    GeoCoord salmon("34.0687443", "-118.4449195");
+    GeoCoord beer("34.0685657", "-118.4489289");
+
+    DeliveryRequest depotReq("Chicken tenders", depot);
+    DeliveryRequest chickenReq("Chicken tenders", chicken);
+    DeliveryRequest salmonReq("B-Plate salmon", salmon);
+    DeliveryRequest beerReq("Pabst Blue Ribbon beer", beer);
+
+    vector<DeliveryRequest> requests;
+    requests.push_back(beerReq);
+    requests.push_back(chickenReq);
+    requests.push_back(salmonReq);
+    vector<DeliveryCommand> commands;
+    double totalDist = 0;
+
+    DeliveryPlanner planner(&sm);
+    DeliveryResult result = planner.generateDeliveryPlan(depot, requests, commands, totalDist);
+    if (result == BAD_COORD)
+        cerr << "BAD COORD" << endl;
+    else if (result == NO_ROUTE)
+        cerr << "NO ROUTE" << endl;
+    else
+        cerr << "DELIVERY SUCCESSFUL" << endl;
+    for (int i = 0; i < commands.size(); i++) {
+        cerr << commands[i].description() << endl;
+    }
+    cerr << "totalDistTravelled = " << totalDist << endl;
 }
 
 void testDeliveryOptimizer() {
@@ -93,7 +130,6 @@ void testDeliveryOptimizer() {
     opt.optimizeDeliveryOrder(depot, deliveries, oldCrow, newCrow);
     cerr << "oldCrow= " << oldCrow << endl;
     cerr << "newCrow= " << newCrow << endl;
-    
 }
 
 
