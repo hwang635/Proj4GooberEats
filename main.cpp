@@ -10,6 +10,7 @@ using namespace std;
 void testExpandableHashMap(); //COMMENT OUT LATER
 void testStreetMap(); //COMMENT OUT LATER
 void testPointToPointRouter(); //COMMENT OUT LATER
+void testDeliveryOptimizer(); //COMMENT OUT LATER
 
 bool loadDeliveryRequests(string deliveriesFile, GeoCoord& depot, vector<DeliveryRequest>& v);
 bool parseDelivery(string line, string& lat, string& lon, string& item);
@@ -67,8 +68,34 @@ int main(int argc, char *argv[])
     cerr.precision(7);
 
     //testStreetMap();
-    testPointToPointRouter();
+    //testPointToPointRouter();
+
+    testDeliveryOptimizer();
 }
+
+void testDeliveryOptimizer() {
+    GeoCoord depot("0", "0");
+    GeoCoord start("34", "118");
+    GeoCoord end("35", "120");
+    DeliveryRequest req1("yum", start);
+    DeliveryRequest req2("yum", end);
+    DeliveryRequest dep("yum", depot);
+
+    StreetMap sm;
+    sm.load("mapdata.txt");
+
+    vector<DeliveryRequest> deliveries;
+    deliveries.push_back(req1);
+    deliveries.push_back(req2);
+    deliveries.push_back(dep);
+    double oldCrow, newCrow;
+    DeliveryOptimizer opt(&sm);
+    opt.optimizeDeliveryOrder(depot, deliveries, oldCrow, newCrow);
+    cerr << "oldCrow= " << oldCrow << endl;
+    cerr << "newCrow= " << newCrow << endl;
+    
+}
+
 
 void testPointToPointRouter() {
     StreetMap sm;
