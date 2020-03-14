@@ -48,8 +48,8 @@ DeliveryResult DeliveryPlannerImpl::generateDeliveryPlan(
     double distTravelled = 0;
 
     //Iterate through all DeliveryRequests ==> generate PTP route + DeliveryCommands for each, add route dist
-    for (int i = 0; i < deliveries.size(); i++) {
-        DeliveryRequest nextDelivery = deliveries[i];
+    for (int i = 0; i < optDeliveries.size(); i++) {
+        DeliveryRequest nextDelivery = optDeliveries[i];
         DeliveryResult dr = //Generate PTP route from current loc to next DeliveryReq
             pRouter.generatePointToPointRoute(startCoord, nextDelivery.location, nextDeliveryRoute, distTravelled);
         totalDistanceTravelled += distTravelled; //add dist travelled to total

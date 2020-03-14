@@ -29,23 +29,52 @@ DeliveryOptimizerImpl::~DeliveryOptimizerImpl() {
 void DeliveryOptimizerImpl::optimizeDeliveryOrder(
     const GeoCoord& depot, vector<DeliveryRequest>& deliveries,
     double& oldCrowDistance, double& newCrowDistance) const {
-
-    GeoCoord current = depot;
+    GeoCoord start = depot;
     GeoCoord next;
     oldCrowDistance = 0;
+    vector<DeliveryRequest> oldDeliveries = deliveries;
 
-    //Calculate orig distance from depot to 1st delivery, then from delivery to next delivery
+    //Calculate origi crow/straight-line dist from depot to 1st delivery ==> next delivery
     for (int i = 0; i < deliveries.size(); i++) {
-        next = deliveries[i].location; //Get next delivery loc
-        oldCrowDistance += distanceEarthMiles(current, next);
-
-        current = next; //Next segment of GC to GC
+        next = deliveries[i].location; //Next delivery loc
+        oldCrowDistance += distanceEarthMiles(start, next);
+        start = next;
     }
-    //When all deliveries have been counted, find distance from last delivery back to depot
-    oldCrowDistance += distanceEarthMiles(current, depot);
+    //Add distance from last delivery ==> back to depot
+    oldCrowDistance += distanceEarthMiles(start, depot);
 
-    //For now, optimiseDeliveryOrder doesn't optimise so newCrowDist == old
-    newCrowDistance = oldCrowDistance;
+    deliveries.clear();
+    double distFromDepot;
+    vector<DeliveryRequest>::iterator oldItr = oldDeliveries.begin();
+    vector<DeliveryRequest>::iterator searchItr;
+    //Loop through each DeliveryReq in oldDeliveries
+    while (!oldDeliveries.empty() && oldItr != oldDeliveries.end()) {
+        DeliveryRequest current = *oldItr;
+        distFromDepot = distanceEarthMiles(depot, current.location);
+
+        deliveries.push_back(current); //Add to deliveries + erase from oldDeliveries
+        oldItr = oldDeliveries.erase(oldItr);
+
+        searchItr = oldDeliveries.begin();
+        //Search through other DeliveryRequests to see if they are located near current req
+        while (!oldDeliveries.empty() && searchItr != oldDeliveries.end()) {
+            //If the req is w/in 1/5 of the dist from depot to current req, from the current req it is "close"
+            if (distanceEarthMiles(searchItr->location, current.location) < distFromDepot / 5) {
+                deliveries.push_back(current);
+                searchItr = oldDeliveries.erase(searchItr);
+            }
+            else
+                searchItr++;
+        }
+    }
+
+    //Compute new crow distance from re-ordered deliveries
+    for (int i = 0; i < deliveries.size(); i++) {
+        next = deliveries[i].location; //Next delivery loc
+        newCrowDistance += distanceEarthMiles(start, next);
+        start = next;
+    }
+    newCrowDistance += distanceEarthMiles(start, depot);
 }
 
 //******************** DeliveryOptimizer functions ****************************

@@ -100,7 +100,7 @@ bool StreetMapImpl::load(string mapFile) {
     ifstream infile(mapFile);
 
     if (!infile) { //Failure to open file
-        cerr << "failure to open file" << endl; //COMMENT OUT LATER
+        //cerr << "failure to open file" << endl; //COMMENT OUT LATER
         return false;
     }
 

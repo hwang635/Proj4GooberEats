@@ -84,17 +84,15 @@ void testDeliveryPlanner() {
     GeoCoord salmon("34.0687443", "-118.4449195");
     GeoCoord beer("34.0685657", "-118.4489289");
 
-    DeliveryRequest depotReq("Chicken tenders", depot);
-    DeliveryRequest chickenReq("Chicken tenders", chicken);
-    DeliveryRequest salmonReq("B-Plate salmon", salmon);
-    DeliveryRequest beerReq("Pabst Blue Ribbon beer", beer);
+    DeliveryRequest depotReq("CHICKEN tenders", depot);
+    DeliveryRequest chickenReq("CHICKEN tenders", chicken);
+    DeliveryRequest salmonReq("B-Plate SLAMON", salmon);
+    DeliveryRequest beerReq("Pabst Blue Ribbon BEER", beer);
 
     vector<DeliveryRequest> requests;
-    requests.push_back(beerReq);
+    requests.push_back(salmonReq);
     requests.push_back(chickenReq);
     requests.push_back(salmonReq);
-    requests.push_back(salmonReq);
-    requests.push_back(depotReq);
     vector<DeliveryCommand> commands;
     double totalDist = 0;
 
@@ -111,7 +109,7 @@ void testDeliveryPlanner() {
     }
     cerr << "totalDistTravelled = " << totalDist << endl;
 
-    requests.clear();
+    /*requests.clear();
     requests.push_back(salmonReq);
     result = planner.generateDeliveryPlan(depot, requests, commands, totalDist);
     if (result == BAD_COORD)
@@ -123,7 +121,7 @@ void testDeliveryPlanner() {
     for (int i = 0; i < commands.size(); i++) {
         cerr << commands[i].description() << endl;
     }
-    cerr << "totalDistTravelled = " << totalDist << endl;
+    cerr << "totalDistTravelled = " << totalDist << endl; */
 
 }
 
