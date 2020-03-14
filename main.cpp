@@ -93,6 +93,8 @@ void testDeliveryPlanner() {
     requests.push_back(beerReq);
     requests.push_back(chickenReq);
     requests.push_back(salmonReq);
+    requests.push_back(salmonReq);
+    requests.push_back(depotReq);
     vector<DeliveryCommand> commands;
     double totalDist = 0;
 
@@ -108,6 +110,21 @@ void testDeliveryPlanner() {
         cerr << commands[i].description() << endl;
     }
     cerr << "totalDistTravelled = " << totalDist << endl;
+
+    requests.clear();
+    requests.push_back(salmonReq);
+    result = planner.generateDeliveryPlan(depot, requests, commands, totalDist);
+    if (result == BAD_COORD)
+        cerr << "BAD COORD" << endl;
+    else if (result == NO_ROUTE)
+        cerr << "NO ROUTE" << endl;
+    else
+        cerr << "DELIVERY SUCCESSFUL" << endl;
+    for (int i = 0; i < commands.size(); i++) {
+        cerr << commands[i].description() << endl;
+    }
+    cerr << "totalDistTravelled = " << totalDist << endl;
+
 }
 
 void testDeliveryOptimizer() {

@@ -125,7 +125,10 @@ DeliveryResult DeliveryPlannerImpl::generateDeliveryPlan(
 
     //After all routes have been travelled to, go back to the depot
     pRouter.generatePointToPointRoute(startCoord, depot, nextDeliveryRoute, distTravelled);
-    totalDistanceTravelled += distTravelled; //add dist t
+    totalDistanceTravelled += distTravelled;
+
+    if (distTravelled == 0) //if distTravelled = 0, already at depot ==> return
+        return DELIVERY_SUCCESS;
 
     list<StreetSegment>::iterator itr = nextDeliveryRoute.begin();
     StreetSegment firstSeg = *itr;
